@@ -1,0 +1,21 @@
+# Python Caches
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Temporary TTS Audio Files
+*.mp3
+*.wav
+
+# Local Database & Secrets
+*.db
+jarvis_hafiza.db
+
+# Virtual Environment
+venv/
+env/
+.env
+
+# OS / Windows specific
+Thumbs.db
+Desktop.ini

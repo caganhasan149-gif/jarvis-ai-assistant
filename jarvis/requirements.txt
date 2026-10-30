@@ -1,0 +1,15 @@
+SpeechRecognition
+pygame
+customtkinter
+edge-tts
+gtts
+groq
+feedparser
+duckduckgo-search
+pillow
+requests
+psutil
+wikipedia
+plyer
+pyautogui
+screen-brightness-control

@@ -1,0 +1,16 @@
+edge-tts>=7.3.0
+pygame>=2.6.0
+PyAutoGUI>=0.9.54
+PyGetWindow>=0.0.9
+pyperclip>=1.9.0
+groq>=1.0.0
+SpeechRecognition>=3.14.0
+screen-brightness-control>=0.24.0
+psutil>=6.0.0
+requests>=2.32.0
+pywin32>=308
+plyer>=2.1.0
+pillow>=10.0.0
+wikipedia>=1.4.0
+pyaudio>=0.2.14
+pyttsx3>=2.90
