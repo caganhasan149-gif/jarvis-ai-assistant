@@ -1704,6 +1704,12 @@ def komut_isle(komut):
         os.system("start calc.exe")
         sesli_konus("Hesap makinesi açıldı.")
 
+    # --- 23. AYARLAR & YAPILANDIRMA PENCERESİ ---
+    elif niyet_kontrol(komut, ["ayarları aç", "ayar penceresi", "yapılandırma", "ayarlar", "kimlik ayarları"]):
+        if root:
+            root.after(100, ayarlar_penceresi_ac)
+        sesli_konus("Yapılandırma ve ayarlar penceresi açıldı efendim.")
+
     # --- 17. TEMA DEĞİŞTİRME ---
     elif niyet_kontrol(komut, ["tema değiştir", "kırmızı tema", "yeşil tema", "mor tema", "varsayılan tema"]):
         if "kırmızı" in komut:
@@ -1992,6 +1998,9 @@ def mod_degistir(hedef_mod=None):
         tk.Button(ust_bar, text="🔵 KÜRE MODUNA DÖN", fg="#000000", bg=t["ana"], activebackground=t["ikincil"],
                   font=("Consolas", 10, "bold"), bd=0, padx=14, pady=5, command=lambda: mod_degistir("kure"), cursor="hand2").pack(side='right')
 
+        tk.Button(ust_bar, text="⚙️ AYARLAR", fg="white", bg="#101730", activebackground=t["ana"],
+                  font=("Consolas", 10, "bold"), bd=0, padx=12, pady=5, command=ayarlar_penceresi_ac, cursor="hand2").pack(side='right', padx=8)
+
         # Ana Gövde
         govde = tk.Frame(root, bg=t["arka"])
         govde.pack(fill='both', expand=True, padx=15, pady=5)
@@ -2200,6 +2209,77 @@ def komut_penceresi_ac():
         log_mesaj(f"👤 {komut}", "user")
         threading.Thread(target=lambda: komut_isle(komut.lower()), daemon=True).start()
 
+def ayarlar_penceresi_ac():
+    """Kullanıcının API anahtarı, Valorant giriş ve kişisel ayarlarını girebileceği görsel HUD penceresi"""
+    if not root:
+        return
+    win = tk.Toplevel(root)
+    win.title("J.A.R.V.I.S — Yapılandırma & Ayarlar")
+    win.geometry("540x640")
+    win.configure(bg="#050816")
+    win.resizable(False, False)
+    win.attributes("-topmost", True)
+
+    t = TEMALAR.get(simdiki_tema, TEMALAR["varsayilan"])
+
+    ust = tk.Frame(win, bg="#0a0e27", height=50)
+    ust.pack(fill="x", padx=15, pady=(15, 10))
+    tk.Label(ust, text="⚙️ SİSTEM VE KİMLİK YAPILANDIRMASI", fg=t["ana"], bg="#0a0e27", font=("Consolas", 12, "bold")).pack(pady=10)
+
+    govde = tk.Frame(win, bg="#050816")
+    govde.pack(fill="both", expand=True, padx=25, pady=5)
+
+    def _alan(label_text, varsayilan="", gizli=False):
+        f = tk.Frame(govde, bg="#050816")
+        f.pack(fill="x", pady=6)
+        tk.Label(f, text=label_text, fg="#a0aec0", bg="#050816", font=("Consolas", 9, "bold")).pack(anchor="w")
+        e = tk.Entry(f, bg="#0c122b", fg="#ffffff", insertbackground="white", font=("Consolas", 10), bd=1, relief="solid")
+        if gizli:
+            e.configure(show="*")
+        e.pack(fill="x", ipady=4, pady=(2, 0))
+        e.insert(0, varsayilan)
+        return e
+
+    e_api = _alan("🔑 Groq API Anahtarı (console.groq.com):", ayar_getir("groq_api_key", ""), gizli=True)
+    e_hitap = _alan("👤 Hitap İsmi (Size nasıl seslensin?):", ayar_getir("kullanici_adi", KULLANICI_ADI))
+    e_valo_user = _alan("🎮 Valorant Kullanıcı Adı:", ayar_getir("valorant_kullanici", ""))
+    e_valo_pass = _alan("🔐 Valorant Şifresi:", ayar_getir("valorant_sifre", ""), gizli=True)
+    e_gmail = _alan("📧 Gmail Adresi (Sesli mail için opsiyonel):", ayar_getir("gmail_adres", ""))
+    e_gmail_pass = _alan("🔒 Gmail Uygulama Şifresi (Opsiyonel):", ayar_getir("gmail_sifre", ""), gizli=True)
+
+    durum_lbl = tk.Label(govde, text="", fg="#00ff88", bg="#050816", font=("Consolas", 9))
+    durum_lbl.pack(pady=6)
+
+    def kaydet():
+        global KULLANICI_ADI, groq_client
+        api_val = e_api.get().strip()
+        hitap_val = e_hitap.get().strip() or "Efendim"
+        valo_u_val = e_valo_user.get().strip()
+        valo_p_val = e_valo_pass.get().strip()
+        gmail_val = e_gmail.get().strip()
+        gmail_p_val = e_gmail_pass.get().strip()
+
+        ayar_kaydet("groq_api_key", api_val)
+        ayar_kaydet("kullanici_adi", hitap_val)
+        ayar_kaydet("valorant_kullanici", valo_u_val)
+        ayar_kaydet("valorant_sifre", valo_p_val)
+        ayar_kaydet("gmail_adres", gmail_val)
+        ayar_kaydet("gmail_sifre", gmail_p_val)
+
+        KULLANICI_ADI = hitap_val
+        groq_client = None
+        get_groq_client()
+
+        durum_lbl.configure(text="✓ Tüm ayarlar veritabanına güvenle kaydedildi!", fg="#00ff88")
+        log_mesaj("⚙️ Sistem ayarları başarıyla güncellendi.", "jarvis")
+        win.after(1000, win.destroy)
+
+    btn_frame = tk.Frame(win, bg="#050816")
+    btn_frame.pack(fill="x", padx=25, pady=(0, 20))
+
+    tk.Button(btn_frame, text="💾 KAYDET & UYGULA", fg="#050816", bg=t["ana"], activebackground=t["ikincil"],
+              font=("Consolas", 11, "bold"), bd=0, padx=20, pady=8, command=kaydet, cursor="hand2").pack(fill="x")
+
 def menu_olustur():
     """Sağ tık HUD menüsü"""
     menu = tk.Menu(root, tearoff=0, bg='#0a0e27', fg='white', activebackground='#00d4ff', activeforeground='black', font=("Consolas", 9))
@@ -2208,6 +2288,7 @@ def menu_olustur():
     menu.add_command(label="🎙️ Mikrofon: Aç / Kapat (Dikkate Al)", command=mikrofon_modu_degistir)
     menu.add_command(label="🛑 Konuşmayı Kes", command=konusmayi_kes)
     menu.add_separator()
+    menu.add_command(label="⚙️ Ayarlar (API & Giriş Bilgileri)", command=ayarlar_penceresi_ac)
     menu.add_command(label="🖥️ Pencere / Küre Modu (F)", command=lambda: mod_degistir())
     menu.add_separator()
     menu.add_command(label="🔴 Iron Man Mark VII (Kırmızı)", command=lambda: tema_uygula("mark_vii"))
