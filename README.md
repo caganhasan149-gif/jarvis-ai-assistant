@@ -4,6 +4,14 @@ Tüm sistemler, niyet motoru, yapay zeka entegrasyonu, dosya analizleri ve sesli
 
 ---
 
+## 🚀 Hızlı Başlangıç & Kurulum (Tek Tıkla)
+1. **Depoyu İndirin:** Bu sayfadaki yeşil **`<> Code`** butonundan **Download ZIP** yapıp bir klasöre çıkartın (veya `git clone` yapın).
+2. **Kütüphaneleri Kurun:** Klasördeki **`kurulum.bat`** dosyasına çift tıklayın (gerekli tüm kütüphaneler otomatik yüklenir).
+3. **Başlatın:** **`baslat.bat`** dosyasına (veya doğrudan `jarvis.py`'ye) çift tıklayın. Fütüristik mavi Arc Reaktörü masaüstünüzün sağ üstünde belirir!
+4. *(İsteğe Bağlı Groq AI Anahtarı)*: Ücretsiz [console.groq.com](https://console.groq.com) adresinden alacağınız API anahtarını Windows ortam değişkenlerine (`GROQ_API_KEY`) ekleyebilir veya konsoldan kaydedebilirsiniz.
+
+---
+
 ## ⚡ 1. Temel Etkileşim, Uyanma & Mikrofon Kontrolleri
 | Komut / Hareket | Açıklama |
 | :--- | :--- |
